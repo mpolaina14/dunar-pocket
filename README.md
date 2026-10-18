@@ -15,7 +15,7 @@ Por ahora el proyecto incluye:
 - Next.js (App Router) con React
 - TypeScript
 - Tailwind CSS
-- ESLint
+- ESLint y Prettier
 - pnpm como gestor de paquetes
 
 Se irán incorporando más herramientas por fases. Las decisiones técnicas y su motivo se registran en la documentación del proyecto.
@@ -34,12 +34,24 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 
 ## Scripts disponibles
 
-| Comando      | Qué hace                                                     |
-| ------------ | ------------------------------------------------------------ |
-| `pnpm dev`   | Arranca el servidor de desarrollo                            |
-| `pnpm build` | Genera la versión de producción                              |
-| `pnpm start` | Sirve la versión de producción (requiere `pnpm build` antes) |
-| `pnpm lint`  | Ejecuta ESLint sobre el código                               |
+| Comando             | Qué hace                                                     |
+| ------------------- | ------------------------------------------------------------ |
+| `pnpm dev`          | Arranca el servidor de desarrollo                            |
+| `pnpm build`        | Genera la versión de producción                              |
+| `pnpm start`        | Sirve la versión de producción (requiere `pnpm build` antes) |
+| `pnpm lint`         | Ejecuta ESLint sobre el código                               |
+| `pnpm format`       | Da formato a todo el proyecto con Prettier                   |
+| `pnpm format:check` | Comprueba el formato sin modificar archivos                  |
+| `pnpm typecheck`    | Comprueba los tipos de TypeScript                            |
+| `pnpm check`        | Ejecuta lint, formato y tipos seguidos                       |
+
+## Calidad del código
+
+Antes de abrir una pull request, ejecuta `pnpm check`: debe terminar sin errores.
+
+Además, al hacer `git commit` se ejecuta un hook (Husky con lint-staged) que corrige y revisa con ESLint y Prettier los archivos que vas a confirmar. Si hay un error que no se puede arreglar solo, el commit se cancela.
+
+Este hook es una primera barrera local y se puede saltar. La comprobación obligatoria en cada pull request llegará con la integración continua (ticket B-05).
 
 ## Estado del proyecto
 
@@ -63,5 +75,6 @@ Los documentos del proyecto están alojados fuera del repositorio y son privados
 - Ramas: `tipo/ID-descripcion` (por ejemplo, `chore/B-01-crear-proyecto`).
 - Commits: Conventional Commits, en español.
 - Todo cambio llega a `main` mediante una pull request revisada.
+- Antes de abrirla, `pnpm check` debe pasar.
 
 El detalle completo está en el documento de convenciones.
