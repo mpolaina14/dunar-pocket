@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# dunar-pocket
 
-## Getting Started
+Aplicación web de control de gastos e ingresos para particulares.
 
-First, run the development server:
+## Contexto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+El cliente es una fintech ficticia que quiere lanzar su aplicación de finanzas personales, y sus requisitos cambian durante el desarrollo. Todos los datos son simulados.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación permitirá registrar movimientos, organizarlos por categorías, definir presupuestos (global y por categoría) y gestionar movimientos recurrentes como domiciliaciones y suscripciones.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Por ahora el proyecto incluye:
 
-## Learn More
+- Next.js (App Router) con React
+- TypeScript
+- Tailwind CSS
+- ESLint
+- pnpm como gestor de paquetes
 
-To learn more about Next.js, take a look at the following resources:
+Se irán incorporando más herramientas por fases. Las decisiones técnicas y su motivo se registran en la documentación del proyecto.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Requisitos
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Una versión LTS reciente de Node.js
+- pnpm (la versión exacta está fijada en el campo `packageManager` de `package.json`)
 
-## Deploy on Vercel
+## Cómo arrancarlo en local
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clona el repositorio y entra en la carpeta del proyecto.
+2. Instala las dependencias: `pnpm install`
+3. Arranca el servidor de desarrollo: `pnpm dev`
+4. Abre [http://localhost:3000](http://localhost:3000) en el navegador.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts disponibles
+
+| Comando | Qué hace |
+| --- | --- |
+| `pnpm dev` | Arranca el servidor de desarrollo |
+| `pnpm build` | Genera la versión de producción |
+| `pnpm start` | Sirve la versión de producción (requiere `pnpm build` antes) |
+| `pnpm lint` | Ejecuta ESLint sobre el código |
+
+## Estado del proyecto
+
+El trabajo se organiza en siete fases: kickoff, base, autenticación y roles, núcleo (movimientos, categorías, presupuestos y recurrentes), panel y experiencia de usuario, calidad y entrega.
+
+Situación actual: fase 1 (kickoff) cerrada y fase 2 (base) en curso. El seguimiento de tickets está en el tablero del proyecto.
+
+## Documentación
+
+Los documentos del proyecto están alojados fuera del repositorio y son privados, por lo que solo abren a quien tenga acceso:
+
+- [Brief del proyecto](https://claude.ai/code/artifact/3b93c141-bd68-4095-934a-e61d3ecf7831): historias de usuario, criterios de aceptación, riesgos y registro de cambios
+- [Backlog de tickets](https://claude.ai/code/artifact/d95fc1c9-85fb-4490-a4bc-fb2e03175752)
+- [Guía técnica de arranque](https://claude.ai/code/artifact/60230e98-032a-44cd-b8b8-147b549d2878)
+- [Convenciones del proyecto](https://claude.ai/code/artifact/ce0ae0d8-a01f-4b96-a9ee-2ac1b25ba270)
+- [Tablero de seguimiento](https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1)
+- [Bocetos de baja fidelidad](https://claude.ai/artifact/K9ZWsTUem7i5A7L8UJXdxo)
+
+## Cómo contribuir
+
+- Ramas: `tipo/ID-descripcion` (por ejemplo, `chore/B-01-crear-proyecto`).
+- Commits: Conventional Commits, en español.
+- Todo cambio llega a `main` mediante una pull request revisada.
+
+El detalle completo está en el documento de convenciones.
