@@ -58,7 +58,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - El administrador nunca consulta movimientos ni importes de los usuarios. Esto está cubierto por tests.
 - Movimientos recurrentes (US-28, Must): se generan solos al abrir el mes, sin duplicados aunque se repita la operación. Un cambio de importe vale desde el mes indicado y no toca el histórico. Se pueden pausar y borrar. Cada movimiento generado se puede editar o borrar de forma individual.
 - Solo español, con textos de interfaz centralizados.
-- Sin marca ni guía de estilo: tokens de diseño neutros y nombre de trabajo provisional.
+- Sin marca ni guía de estilo: tokens de diseño neutros. El nombre del proyecto, por ahora, es `dunar-pocket`.
 - Todas las pantallas con datos tienen estados de carga, vacío (con acción sugerida) y error (con reintento).
 
 ## Convenciones
