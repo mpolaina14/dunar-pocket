@@ -35,6 +35,7 @@ Simulación de trabajo en una empresa: app web de control de gastos e ingresos p
 Next.js (App Router), TypeScript, Tailwind, HeroUI, ESLint, Prettier, Vitest y Playwright, despliegue en Vercel.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
+
 - PostgreSQL en Neon, Drizzle como ORM (Prisma como alternativa).
 - Better Auth para la autenticación.
 - Zod para validación compartida, React Hook Form con Zod en formularios.
