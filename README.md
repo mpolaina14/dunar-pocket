@@ -34,12 +34,12 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 
 ## Scripts disponibles
 
-| Comando | Qué hace |
-| --- | --- |
-| `pnpm dev` | Arranca el servidor de desarrollo |
-| `pnpm build` | Genera la versión de producción |
+| Comando      | Qué hace                                                     |
+| ------------ | ------------------------------------------------------------ |
+| `pnpm dev`   | Arranca el servidor de desarrollo                            |
+| `pnpm build` | Genera la versión de producción                              |
 | `pnpm start` | Sirve la versión de producción (requiere `pnpm build` antes) |
-| `pnpm lint` | Ejecuta ESLint sobre el código |
+| `pnpm lint`  | Ejecuta ESLint sobre el código                               |
 
 ## Estado del proyecto
 

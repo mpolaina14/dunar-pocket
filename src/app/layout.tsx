@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "DUNAR Pocket",
-  description: "Control de gastos e ingresos. Presupuesto mensual sin sorpresas",
+  description:
+    "Control de gastos e ingresos. Presupuesto mensual sin sorpresas",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
