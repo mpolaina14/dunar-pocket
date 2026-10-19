@@ -10,7 +10,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm check",
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test",
     "prepare": "husky",
     "test": "vitest run",
     "test:watch": "vitest"
