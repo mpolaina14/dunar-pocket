@@ -28,12 +28,20 @@
   --link: var(--color-slate-900);
 
   /* Estados del presupuesto (siempre con texto e icono, nunca solo color) */
-  --success: var(--color-green-700);
+  --success: var(--color-teal-500);
   --success-foreground: var(--white);
-  --warning: var(--color-amber-700);
-  --warning-foreground: var(--white);
-  --danger: var(--color-red-700);
+  --warning: var(--color-yellow-500);
+  --warning-foreground: var(--color-slate-900);
+  --danger: var(--color-rose-500);
   --danger-foreground: var(--white);
+
+  /* Chips de estado: fondo de color al 10% y texto/icono en el mismo color en tono 800 (contraste > 6:1) */
+  --success-soft: color-mix(in oklab, var(--success) 10%, transparent);
+  --success-soft-foreground: var(--color-teal-800);
+  --warning-soft: color-mix(in oklab, var(--warning) 10%, transparent);
+  --warning-soft-foreground: var(--color-yellow-800);
+  --danger-soft: color-mix(in oklab, var(--danger) 10%, transparent);
+  --danger-soft-foreground: var(--color-rose-800);
 
   /* Campos de formulario */
   --field-background: var(--white);
