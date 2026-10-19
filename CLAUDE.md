@@ -32,7 +32,7 @@ Simulación de trabajo en una empresa: app web de control de gastos e ingresos p
 
 ## Stack
 
-Next.js (App Router), TypeScript, Tailwind, HeroUI, ESLint, Prettier, Vitest y Playwright, despliegue en Vercel.
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, HeroUI v3, ESLint, Prettier (con `prettier-plugin-tailwindcss`), Vitest y Playwright, despliegue en Vercel.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 
@@ -40,7 +40,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - Better Auth para la autenticación.
 - Zod para validación compartida, React Hook Form con Zod en formularios.
 - pnpm, Husky con lint-staged, GitHub Actions para CI, Playwright con axe para accesibilidad.
-- Versión de HeroUI y librería de gráficos: se deciden en tickets propios (B-03 y D-03).
+- La librería de gráficos (HeroUI no incluye) se decide en su propio ticket (D-03).
 
 ## Arquitectura
 
@@ -48,6 +48,20 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - Next.js 16 sustituye `middleware.ts` por `proxy.ts`. Aun así, la autorización se comprueba en cada acción y consulta del servidor, no solo en el proxy.
 - Estructura por funcionalidades en `src/features` (transacciones, presupuestos, categorías, panel, autenticación, recurrencias), cada una con sus componentes, acciones, consultas, esquemas y dominio.
 - El dominio es lógica pura, testeable sin Next.
+
+- `next.config.ts` activa de forma deliberada `cacheComponents`, `partialPrefetching` y `reactCompiler`. No los quites sin una decisión. Con `cacheComponents`, lo dinámico (fechas, datos) exige su límite de carga; si `pnpm build` se queja, es por eso.
+
+## Diseño y estilos
+
+- Los tokens de diseño están en `src/app/globals.css`, en un `:root` sin `@layer` que sobrescribe las variables de HeroUI. Cambia un color o un valor ahí, no en cada componente.
+- En los componentes usa clases semánticas (`bg-foreground`, `text-muted`, `bg-success`, `border-border`...) y no colores de la paleta como `bg-slate-900`.
+- Paleta: neutros `slate`; estados del presupuesto en teal (en rango), yellow (cerca del límite) y rose (superado).
+- El estado nunca se transmite solo con color: va siempre con texto e icono. Los chips de estado usan el color al 10 % de fondo y el mismo color en tono 800 para el texto y el icono (contraste mayor de 6:1).
+- Tipografía: Geist. Los títulos `h1` a `h4` y `small` tienen estilo base en `@layer base` de `globals.css`; no repitas esas clases en cada etiqueta. Una clase de Tailwind sigue valiendo para una excepción puntual. El nivel del título lo decide la jerarquía del documento, no el tamaño. Los importes de dinero llevan `tabular-nums`.
+- Espaciado y radios: valores por defecto de Tailwind y HeroUI (base de 4 px, radio de 0,5 rem). Objetivo táctil mínimo de 44 px (`min-h-11`).
+- Solo modo claro. El modo oscuro queda fuera de alcance.
+- HeroUI v3 no usa proveedor: se tematiza con variables CSS. Antes de usar un componente, mira su API real en `node_modules/@heroui/react`, porque v3 cambia respecto a v2.
+- `/design-test` es una página temporal para probar tokens y componentes. No es parte de la aplicación final (ver B-14).
 
 ## Reglas de negocio ya decididas
 
@@ -59,7 +73,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - El administrador nunca consulta movimientos ni importes de los usuarios. Esto está cubierto por tests.
 - Movimientos recurrentes (US-28, Must): se generan solos al abrir el mes, sin duplicados aunque se repita la operación. Un cambio de importe vale desde el mes indicado y no toca el histórico. Se pueden pausar y borrar. Cada movimiento generado se puede editar o borrar de forma individual.
 - Solo español, con textos de interfaz centralizados.
-- Sin marca ni guía de estilo: tokens de diseño neutros. El nombre del proyecto, por ahora, es `dunar-pocket`.
+- Sin marca ni guía de estilo: tokens de diseño neutros y sobrios. El nombre del proyecto, por ahora, es `dunar-pocket`.
 - Todas las pantallas con datos tienen estados de carga, vacío (con acción sugerida) y error (con reintento).
 
 ## Convenciones
@@ -80,4 +94,4 @@ Lighthouse 90 o más, cobertura de 80 % o más en lógica de negocio, cero fallo
 
 ## Estado actual
 
-Fase 1 cerrada. Fase 2 en curso, empezando por B-01 (crear el proyecto y el repositorio). Consulta el tablero para ver el estado de cada ticket.
+Fase 1 cerrada. Fase 2 (base) en curso. Consulta el tablero para ver el estado de cada ticket.
