@@ -17,6 +17,7 @@ Por ahora el proyecto incluye:
 - Tailwind CSS v4
 - HeroUI v3 (componentes de interfaz)
 - ESLint y Prettier (con `prettier-plugin-tailwindcss` para ordenar las clases)
+- Vitest (tests unitarios) y Playwright (tests de extremo a extremo)
 - pnpm como gestor de paquetes
 
 Se irán incorporando más herramientas por fases. Las decisiones técnicas y su motivo se registran en la documentación del proyecto.
@@ -44,7 +45,11 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 | `pnpm format`       | Da formato a todo el proyecto con Prettier                   |
 | `pnpm format:check` | Comprueba el formato sin modificar archivos                  |
 | `pnpm typecheck`    | Comprueba los tipos de TypeScript                            |
-| `pnpm check`        | Ejecuta lint, formato y tipos seguidos                       |
+| `pnpm test`         | Ejecuta los tests unitarios una vez (Vitest)                 |
+| `pnpm test:watch`   | Ejecuta los tests unitarios y los repite al guardar          |
+| `pnpm test:e2e`     | Ejecuta los tests de extremo a extremo (Playwright)          |
+| `pnpm test:e2e:ui`  | Abre la interfaz de Playwright para depurar los tests E2E    |
+| `pnpm check`        | Ejecuta lint, formato, tipos y tests unitarios seguidos      |
 
 ## Calidad del código
 
@@ -53,6 +58,15 @@ Antes de abrir una pull request, ejecuta `pnpm check`: debe terminar sin errores
 Además, al hacer `git commit` se ejecuta un hook (Husky con lint-staged) que corrige y revisa con ESLint y Prettier los archivos que vas a confirmar. Si hay un error que no se puede arreglar solo, el commit se cancela.
 
 Este hook es una primera barrera local y se puede saltar. La comprobación obligatoria en cada pull request llegará con la integración continua (ticket B-05).
+
+## Tests
+
+- **Unitarios (Vitest):** archivos `*.test.ts` junto al código que prueban. Se ejecutan con `pnpm test` y forman parte de `pnpm check`.
+- **Extremo a extremo (Playwright):** archivos `*.spec.ts` en la carpeta `e2e/`. Se ejecutan con `pnpm test:e2e`, solo con Chromium. No forman parte de `pnpm check`.
+
+La primera vez que los ejecutes en una máquina, descarga el navegador de Playwright: `pnpm exec playwright install chromium`.
+
+`pnpm test:e2e` compila la versión de producción y la sirve en el puerto 3100, así que tarda más que los unitarios. Si ya hay un servidor en ese puerto fuera de CI, lo reutiliza. Los informes se generan en `playwright-report/` y `test-results/`, que no se suben al repositorio.
 
 ## Diseño y estilos
 

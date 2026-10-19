@@ -63,6 +63,15 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - HeroUI v3 no usa proveedor: se tematiza con variables CSS. Antes de usar un componente, mira su API real en `node_modules/@heroui/react`, porque v3 cambia respecto a v2.
 - `/design-test` es una página temporal para probar tokens y componentes. No es parte de la aplicación final (ver B-14).
 
+## Tests
+
+- Unitarios con Vitest (entorno jsdom): `*.test.ts` junto al código que prueban. Importa `describe`, `it` y `expect` desde `"vitest"`; no hay globals. `vitest.config.mts` solo busca en `src/`.
+- Extremo a extremo con Playwright (solo Chromium): `*.spec.ts` en `e2e/`. Corren contra la versión de producción (`pnpm build && pnpm start -p 3100`), no contra `pnpm dev`.
+- Locators de Playwright, por orden de preferencia: `getByRole`, `getByLabel`, `getByText` y CSS solo como último recurso. Nada de `waitForTimeout`: usa las esperas automáticas de las aserciones.
+- `pnpm check` incluye los tests unitarios, pero no los E2E (`pnpm test:e2e`).
+- Los tests de componentes (Testing Library) se añadirán cuando haya un componente real que probar.
+- No toques `playwright-report/` ni `test-results/`: son artefactos generados e ignorados por git, ESLint y Prettier.
+
 ## Reglas de negocio ya decididas
 
 - Importes en céntimos enteros, solo euros. Los movimientos guardan solo la fecha; el mes se calcula en Europe/Madrid.
