@@ -1,26 +1,73 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "@heroui/styles";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Tokens de DUNAR Pocket. Van sin @layer para ganar a los valores por defecto de HeroUI. */
+:root {
+  /* Superficies */
+  --background: var(--white);
+  --surface: var(--white);
+  --surface-secondary: var(--color-slate-100);
+  --surface-tertiary: var(--color-slate-200);
+  --overlay: var(--white);
+  --default: var(--color-slate-100);
+  --default-foreground: var(--color-slate-900);
+
+  /* Texto */
+  --foreground: var(--color-slate-900);
+  --muted: var(--color-slate-600);
+
+  /* Marca / acción principal */
+  --accent: var(--color-slate-900);
+  --accent-foreground: var(--white);
+  --focus: var(--color-slate-900);
+  --link: var(--color-slate-900);
+
+  /* Estados del presupuesto (siempre con texto e icono, nunca solo color) */
+  --success: var(--color-green-700);
+  --success-foreground: var(--white);
+  --warning: var(--color-amber-700);
+  --warning-foreground: var(--white);
+  --danger: var(--color-red-700);
+  --danger-foreground: var(--white);
+
+  /* Campos de formulario */
+  --field-background: var(--white);
+  --field-foreground: var(--color-slate-900);
+  --field-placeholder: var(--color-slate-600);
+  --field-border: var(--color-slate-500);
+  --field-border-width: 1px;
+  --field-radius: var(--radius);
+
+  /* Bordes y separadores */
+  --border: var(--color-slate-300);
+  --separator: var(--color-slate-300);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Tipografía base: cada etiqueta tiene siempre el mismo tamaño y peso.
+   Las clases de utilidad (text-lg, font-bold...) siguen ganando si hace falta una excepción. */
+@layer base {
+  h1 {
+    @apply text-2xl font-semibold md:text-3xl;
+  }
+
+  h2 {
+    @apply text-xl font-semibold;
+  }
+
+  h3 {
+    @apply text-lg font-semibold;
+  }
+
+  h4 {
+    @apply text-base font-semibold;
+  }
+
+  small {
+    @apply text-sm;
+  }
 }
