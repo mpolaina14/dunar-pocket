@@ -14,8 +14,9 @@ Por ahora el proyecto incluye:
 
 - Next.js (App Router) con React
 - TypeScript
-- Tailwind CSS
-- ESLint y Prettier
+- Tailwind CSS v4
+- HeroUI v3 (componentes de interfaz)
+- ESLint y Prettier (con `prettier-plugin-tailwindcss` para ordenar las clases)
 - pnpm como gestor de paquetes
 
 Se irán incorporando más herramientas por fases. Las decisiones técnicas y su motivo se registran en la documentación del proyecto.
@@ -52,6 +53,17 @@ Antes de abrir una pull request, ejecuta `pnpm check`: debe terminar sin errores
 Además, al hacer `git commit` se ejecuta un hook (Husky con lint-staged) que corrige y revisa con ESLint y Prettier los archivos que vas a confirmar. Si hay un error que no se puede arreglar solo, el commit se cancela.
 
 Este hook es una primera barrera local y se puede saltar. La comprobación obligatoria en cada pull request llegará con la integración continua (ticket B-05).
+
+## Diseño y estilos
+
+Los estilos se apoyan en Tailwind CSS y en HeroUI v3, que se tematiza con variables CSS y no necesita proveedor. Los tokens de diseño propios están en `src/app/globals.css`:
+
+- **Colores:** neutros de la paleta `slate` de Tailwind, y teal, yellow y rose para los estados del presupuesto (en rango, cerca del límite y superado). Los estados siempre se indican con texto e icono, nunca solo con color. Los chips de estado usan el color al 10% de fondo y el mismo tono 800 para el texto y el icono.
+- **Tipografía:** Geist. Los títulos `h1` a `h4`, el texto pequeño (`small`) y el cuerpo tienen un tamaño y un peso base definidos en `globals.css`, así que no hace falta añadir clases a cada etiqueta. Una clase de Tailwind (`text-lg`, `font-bold`...) sigue sirviendo para una excepción puntual.
+- **Espaciado y radios:** se usan los valores por defecto de Tailwind y HeroUI (base de 4px y radio de 0,5 rem).
+- **Solo modo claro:** el modo oscuro queda fuera del alcance por ahora.
+
+La ruta `/design-test` es una página temporal que reúne títulos, botones, campos, estados de presupuesto y esqueletos de carga. Sirve para comprobar visualmente los tokens y los componentes, y no forma parte de la aplicación final.
 
 ## Estado del proyecto
 
