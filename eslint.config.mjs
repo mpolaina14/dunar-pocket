@@ -13,6 +13,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Artefactos generados por Playwright.
+    "playwright-report/**",
+    "test-results/**",
   ]),
   // Must stay last: turns off rules that conflict with Prettier.
   prettier,
