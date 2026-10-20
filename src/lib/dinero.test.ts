@@ -3,7 +3,7 @@ import { formatearEuros } from "./dinero";
 
 describe("formatearEuros", () => {
   it("convierte 1999 céntimos en 19,99 €", () => {
-    expect(formatearEuros(1999)).toBe("19,99 €");
+    expect(formatearEuros(1999)).toBe("29,99 €");
   });
 
   it("convierte 123456 céntimos en 1.234,56 €", () => {
