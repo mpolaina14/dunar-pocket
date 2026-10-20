@@ -24,7 +24,7 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 
 ## Requisitos
 
-- Una versión LTS reciente de Node.js
+- Node.js 24 (la versión está fijada en `.nvmrc` y en el campo `engines` de `package.json`; con nvm basta `nvm use`)
 - pnpm (la versión exacta está fijada en el campo `packageManager` de `package.json`)
 
 ## Cómo arrancarlo en local
@@ -69,6 +69,17 @@ El flujo de CI está en `.github/workflows/ci.yml` (GitHub Actions) y se ejecuta
 La ruleset de `main` exige que los dos checks (`Calidad` y `E2E`) pasen antes de poder hacer el merge. Si renombras un job en el workflow, hay que actualizar también la ruleset.
 
 El CI ejecuta los mismos scripts que tienes en local, así que un fallo se reproduce con el comando del paso que falló. `pnpm typecheck` genera antes los tipos de Next (`next typegen`), por eso funciona también en un clon limpio.
+
+## Despliegue
+
+La aplicación se despliega en Vercel, conectado a este repositorio de GitHub:
+
+- **Producción:** [dunar-pocket.vercel.app](https://dunar-pocket.vercel.app/). Se actualiza sola cada vez que se hace merge en `main`. La portada es todavía provisional.
+- **Vista previa:** cada pull request genera su propia URL. El enlace aparece en un comentario de Vercel en la PR. Las vistas previas están protegidas: hay que iniciar sesión en Vercel para abrirlas.
+- **Node:** Vercel toma la versión del campo `engines` de `package.json` (24), la misma que `.nvmrc` y el CI.
+- **Variables de entorno:** se configuran en Vercel (Settings, Environment Variables), separadas por entorno (Production, Preview y Development). No se suben al repositorio. Por ahora no hay ninguna.
+
+Vercel hace su propio build, independiente del CI de GitHub Actions. Su check aparece en las PR, pero no es obligatorio: lo que bloquea el merge son `Calidad` y `E2E`.
 
 ## Tests
 

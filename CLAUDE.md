@@ -77,8 +77,16 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - Workflow en `.github/workflows/ci.yml` con dos jobs en paralelo: `Calidad` (lint, formato, tipos, tests unitarios y build) y `E2E` (Playwright). Los nombres de los jobs son los checks que exige la ruleset de `main`: si cambias uno, actualiza también la ruleset.
 - El workflow llama a los scripts de `package.json`; no pongas comandos propios que no se puedan repetir en local.
 - `pnpm typecheck` ejecuta `next typegen` antes de `tsc`, porque `.next` no existe en un clon limpio ni en CI.
-- Las acciones se fijan por versión mayor (por ejemplo `@v7`). Node 22; pnpm se toma de `packageManager`.
+- Las acciones se fijan por versión mayor (por ejemplo `@v7`). La versión de Node sale de `.nvmrc` (24) y se repite en `engines` de `package.json`, que es lo que lee Vercel: si la cambias, cámbiala en los dos sitios. pnpm se toma de `packageManager`.
 - Permisos mínimos (`contents: read`). No añadas secretos ni permisos de escritura sin una decisión.
+
+## Despliegue
+
+- Vercel, conectado al repositorio. Producción: https://dunar-pocket.vercel.app/ (rama `main`). Cada PR genera una vista previa protegida por login de Vercel.
+- Node lo fija `engines` en `package.json` (24.x); Vercel lo lee de ahí, no del panel. Debe coincidir con `.nvmrc` y con el CI.
+- Las variables de entorno viven en Vercel, por entorno, y nunca en el repositorio. Si el código necesita una nueva, documéntala en el README sin poner su valor y avisa a Manuel de que debe añadirla en Vercel antes de mergear.
+- El check de Vercel no es obligatorio en la ruleset. Lo obligatorio es `Calidad` y `E2E`.
+- Un build que pasa en el CI y falla en Vercel suele ser un entorno (variable de entorno, versión de Node): empieza por ahí.
 
 ## Reglas de negocio ya decididas
 
