@@ -24,7 +24,7 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 
 ## Requisitos
 
-- Una versión LTS reciente de Node.js
+- Node.js 24 (la versión está fijada en `.nvmrc` y en el campo `engines` de `package.json`; con nvm basta `nvm use`)
 - pnpm (la versión exacta está fijada en el campo `packageManager` de `package.json`)
 
 ## Cómo arrancarlo en local
