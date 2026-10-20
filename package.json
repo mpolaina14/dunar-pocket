@@ -9,7 +9,7 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test",
     "prepare": "husky",
     "test": "vitest run",
