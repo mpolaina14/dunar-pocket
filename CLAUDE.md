@@ -80,6 +80,14 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - Las acciones se fijan por versión mayor (por ejemplo `@v7`). La versión de Node sale de `.nvmrc` (24) y se repite en `engines` de `package.json`, que es lo que lee Vercel: si la cambias, cámbiala en los dos sitios. pnpm se toma de `packageManager`.
 - Permisos mínimos (`contents: read`). No añadas secretos ni permisos de escritura sin una decisión.
 
+## Despliegue
+
+- Vercel, conectado al repositorio. Producción: https://dunar-pocket.vercel.app/ (rama `main`). Cada PR genera una vista previa protegida por login de Vercel.
+- Node lo fija `engines` en `package.json` (24.x); Vercel lo lee de ahí, no del panel. Debe coincidir con `.nvmrc` y con el CI.
+- Las variables de entorno viven en Vercel, por entorno, y nunca en el repositorio. Si el código necesita una nueva, documéntala en el README sin poner su valor y avisa a Manuel de que debe añadirla en Vercel antes de mergear.
+- El check de Vercel no es obligatorio en la ruleset. Lo obligatorio es `Calidad` y `E2E`.
+- Un build que pasa en el CI y falla en Vercel suele ser un entorno (variable de entorno, versión de Node): empieza por ahí.
+
 ## Reglas de negocio ya decididas
 
 - Importes en céntimos enteros, solo euros. Los movimientos guardan solo la fecha; el mes se calcula en Europe/Madrid.
