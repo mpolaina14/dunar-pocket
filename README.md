@@ -57,7 +57,18 @@ Antes de abrir una pull request, ejecuta `pnpm check`: debe terminar sin errores
 
 Además, al hacer `git commit` se ejecuta un hook (Husky con lint-staged) que corrige y revisa con ESLint y Prettier los archivos que vas a confirmar. Si hay un error que no se puede arreglar solo, el commit se cancela.
 
-Este hook es una primera barrera local y se puede saltar. La comprobación obligatoria en cada pull request llegará con la integración continua (ticket B-05).
+Este hook es una primera barrera local y se puede saltar. La comprobación obligatoria está en la integración continua (ver la sección siguiente).
+
+## Integración continua
+
+El flujo de CI está en `.github/workflows/ci.yml` (GitHub Actions) y se ejecuta en cada pull request hacia `main` y en cada push a `main`. Tiene dos jobs que corren en paralelo:
+
+- **Calidad:** instala con el lockfile congelado y ejecuta lint, formato, tipos, tests unitarios y `pnpm build`.
+- **E2E:** instala Chromium y ejecuta los tests de Playwright. Si fallan, sube el informe como artefacto descargable desde la pestaña Checks.
+
+La ruleset de `main` exige que los dos checks (`Calidad` y `E2E`) pasen antes de poder hacer el merge. Si renombras un job en el workflow, hay que actualizar también la ruleset.
+
+El CI ejecuta los mismos scripts que tienes en local, así que un fallo se reproduce con el comando del paso que falló. `pnpm typecheck` genera antes los tipos de Next (`next typegen`), por eso funciona también en un clon limpio.
 
 ## Tests
 

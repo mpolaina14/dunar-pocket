@@ -39,7 +39,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - PostgreSQL en Neon, Drizzle como ORM (Prisma como alternativa).
 - Better Auth para la autenticación.
 - Zod para validación compartida, React Hook Form con Zod en formularios.
-- pnpm, Husky con lint-staged, GitHub Actions para CI, Playwright con axe para accesibilidad.
+- pnpm, Husky con lint-staged, Playwright con axe para accesibilidad.
 - La librería de gráficos (HeroUI no incluye) se decide en su propio ticket (D-03).
 
 ## Arquitectura
@@ -71,6 +71,14 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - `pnpm check` incluye los tests unitarios, pero no los E2E (`pnpm test:e2e`).
 - Los tests de componentes (Testing Library) se añadirán cuando haya un componente real que probar.
 - No toques `playwright-report/` ni `test-results/`: son artefactos generados e ignorados por git, ESLint y Prettier.
+
+## Integración continua
+
+- Workflow en `.github/workflows/ci.yml` con dos jobs en paralelo: `Calidad` (lint, formato, tipos, tests unitarios y build) y `E2E` (Playwright). Los nombres de los jobs son los checks que exige la ruleset de `main`: si cambias uno, actualiza también la ruleset.
+- El workflow llama a los scripts de `package.json`; no pongas comandos propios que no se puedan repetir en local.
+- `pnpm typecheck` ejecuta `next typegen` antes de `tsc`, porque `.next` no existe en un clon limpio ni en CI.
+- Las acciones se fijan por versión mayor (por ejemplo `@v7`). Node 22; pnpm se toma de `packageManager`.
+- Permisos mínimos (`contents: read`). No añadas secretos ni permisos de escritura sin una decisión.
 
 ## Reglas de negocio ya decididas
 
