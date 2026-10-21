@@ -29,14 +29,22 @@ Simulación de trabajo en una empresa: app web de control de gastos e ingresos p
 - Convenciones del proyecto: https://claude.ai/code/artifact/ce0ae0d8-a01f-4b96-a9ee-2ac1b25ba270
 - Tablero de seguimiento: https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1
 - Bocetos (móvil, escritorio y estados): https://claude.ai/artifact/K9ZWsTUem7i5A7L8UJXdxo
+- Decisión B-07, persistencia (Postgres en Neon con Drizzle): https://claude.ai/artifact/2RocVYcGpJAm3gRUHYnD9K
+- Estructura del proyecto (B-09): carpetas, capas y reglas de importación: https://claude.ai/artifact/WoNy7ZUsH2Rt88Zuiuk6V7
 
 ## Stack
 
 Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, HeroUI v3, ESLint, Prettier (con `prettier-plugin-tailwindcss`), Vitest y Playwright, despliegue en Vercel.
 
+Decidido en B-07: PostgreSQL en Neon con Drizzle como ORM (Prisma queda descartado; el motivo está en el registro de la decisión).
+
+- Cuando se instale Drizzle, fija la versión exacta (sin `^`).
+- `DATABASE_URL` será la primera variable de entorno real. Vive en Vercel, por entorno, y nunca en el repositorio (ver Despliegue).
+- El plan gratuito de Neon suspende el cómputo tras 5 minutos sin uso: la primera petición puede tardar más (arranque en frío). No lo trates como un fallo.
+- El paquete `server-only` se instalará cuando exista el primer archivo de datos (B-10).
+
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 
-- PostgreSQL en Neon, Drizzle como ORM (Prisma como alternativa).
 - Better Auth para la autenticación.
 - Zod para validación compartida, React Hook Form con Zod en formularios.
 - pnpm, Husky con lint-staged, Playwright con axe para accesibilidad.
@@ -46,8 +54,20 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 
 - Monolito Next.js. Server Components para lecturas y Server Actions para escrituras.
 - Next.js 16 sustituye `middleware.ts` por `proxy.ts`. Aun así, la autorización se comprueba en cada acción y consulta del servidor, no solo en el proxy.
-- Estructura por funcionalidades en `src/features` (transacciones, presupuestos, categorías, panel, autenticación, recurrencias), cada una con sus componentes, acciones, consultas, esquemas y dominio.
-- El dominio es lógica pura, testeable sin Next.
+- Estructura por funcionalidades en `src/features/<funcionalidad>` (transacciones, presupuestos, categorías, panel, autenticación, recurrencias). Cada una puede tener:
+  - `components/`: interfaz de la funcionalidad.
+  - `actions.ts`: Server Actions. Validan con Zod, comprueban la sesión, llaman al dominio y a los datos, y revalidan.
+  - `queries.ts`: lecturas. `mutations.ts`: escrituras. Ambos acceden a la base de datos.
+  - `schemas.ts`: esquemas Zod.
+  - `domain/`: lógica de negocio pura, con sus `*.test.ts` al lado.
+- Fuera de las funcionalidades: `src/db/schema/` (esquema central de Drizzle) y `src/db/client.ts`; `src/lib/` (dinero, fechas, textos de interfaz); `src/components/ui/` (componentes compartidos); `src/app/` (rutas finas que solo componen); `e2e/` (tests de extremo a extremo).
+- Sin archivos `index.ts` que reexporten (barrels). Alias de importación: `@/*` apunta a `src/*`. Los nombres del dominio van en español.
+- Reglas de importación, comprobadas por ESLint (`no-restricted-imports` en `eslint.config.mjs`; si cambias una capa, cambia también la regla):
+  - El dominio no importa `next`, `react`, `react-dom`, `@/db`, `drizzle-orm`, `server-only`, ni `queries`, `mutations` o `actions`. Recibe lo que necesita por parámetros.
+  - La interfaz (`src/app`, `src/components`, `components/` de cada funcionalidad) no importa `@/db`, `drizzle-orm` ni `mutations`. Lee a través de `queries` y escribe a través de `actions`.
+  - El acceso a datos (`queries.ts`, `mutations.ts`, `src/db`) no importa componentes ni `actions`.
+  - Entre funcionalidades se puede usar el dominio y las `queries` de otra, nunca sus componentes ni sus acciones (esta regla se revisa en code review, ESLint no la comprueba).
+- El dominio es lógica pura, testeable sin Next. Ejemplo de referencia: `src/features/presupuestos/domain/estado-presupuesto.ts` y su test.
 
 - `next.config.ts` activa de forma deliberada `cacheComponents`, `partialPrefetching` y `reactCompiler`. No los quites sin una decisión. Con `cacheComponents`, lo dinámico (fechas, datos) exige su límite de carga; si `pnpm build` se queja, es por eso.
 

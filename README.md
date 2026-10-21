@@ -51,6 +51,28 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 | `pnpm test:e2e:ui`  | Abre la interfaz de Playwright para depurar los tests E2E    |
 | `pnpm check`        | Ejecuta lint, formato, tipos y tests unitarios seguidos      |
 
+## Estructura del proyecto
+
+El código se organiza por funcionalidades y separa tres capas: interfaz, lógica de negocio (dominio) y acceso a datos.
+
+```text
+src/
+├── app/                  rutas de Next.js (solo componen)
+├── components/ui/        componentes compartidos
+├── db/                   esquema (Drizzle) y cliente de base de datos
+├── features/
+│   └── <funcionalidad>/  transacciones, presupuestos, categorías...
+│       ├── components/   interfaz
+│       ├── actions.ts    Server Actions (escrituras desde la interfaz)
+│       ├── queries.ts    lecturas
+│       ├── mutations.ts  escrituras en la base de datos
+│       ├── schemas.ts    validación con Zod
+│       └── domain/       lógica pura y sus tests
+└── lib/                  utilidades (dinero, fechas, textos)
+```
+
+Algunas reglas de importación se comprueban con ESLint: el dominio no puede importar Next, React ni la base de datos; la interfaz no accede a la base de datos; y el acceso a datos no depende de la interfaz. El detalle y los motivos están en el documento de estructura (ver Documentación).
+
 ## Calidad del código
 
 Antes de abrir una pull request, ejecuta `pnpm check`: debe terminar sin errores.
@@ -115,6 +137,8 @@ Los documentos del proyecto están alojados fuera del repositorio y son privados
 - [Backlog de tickets](https://claude.ai/code/artifact/d95fc1c9-85fb-4490-a4bc-fb2e03175752)
 - [Guía técnica de arranque](https://claude.ai/code/artifact/60230e98-032a-44cd-b8b8-147b549d2878)
 - [Convenciones del proyecto](https://claude.ai/code/artifact/ce0ae0d8-a01f-4b96-a9ee-2ac1b25ba270)
+- [Estructura del proyecto (B-09)](https://claude.ai/artifact/WoNy7ZUsH2Rt88Zuiuk6V7): carpetas, capas y reglas de importación
+- [Decisión de persistencia (B-07)](https://claude.ai/artifact/2RocVYcGpJAm3gRUHYnD9K): Postgres en Neon con Drizzle
 - [Tablero de seguimiento](https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1)
 - [Bocetos de baja fidelidad](https://claude.ai/artifact/K9ZWsTUem7i5A7L8UJXdxo)
 
