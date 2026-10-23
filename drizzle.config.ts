@@ -14,5 +14,7 @@ export default defineConfig({
   dialect: "postgresql",
   schema: "./src/db/schema/*.ts",
   out: "./drizzle",
+  // En TypeScript escribes camelCase; en la base se guarda en snake_case.
+  casing: "snake_case",
   dbCredentials: { url },
 });
