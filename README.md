@@ -85,7 +85,9 @@ Para trabajar en local:
 2. Rellena las dos cadenas de conexión de la rama `development` desde el botón Connect del panel de Neon: `DATABASE_URL` (con «Connection pooling» activado) y `DATABASE_URL_UNPOOLED` (desactivado).
 3. `.env.local` no se sube al repositorio. No pegues nunca estas cadenas en un issue, una PR ni un chat.
 
-El esquema está en `src/db/schema/`. Tras cambiarlo, `pnpm db:generate` crea una migración en `drizzle/` y `pnpm db:migrate` la aplica a la base de `.env.local`. Las migraciones se revisan en la PR y no se editan a mano.
+El esquema está en `src/db/schema/`, un archivo por grupo de tablas: `autenticacion.ts` (usuarios), `categorias.ts`, `movimientos.ts` y `presupuestos.ts`. El cliente está en `src/db/client.ts` y solo se importa desde código de servidor. Los importes se guardan en céntimos.
+
+Tras cambiar el esquema, `pnpm db:generate` crea una migración en `drizzle/` y `pnpm db:migrate` la aplica a la base de `.env.local`. Las migraciones se revisan en la PR y no se editan a mano.
 
 ## Calidad del código
 

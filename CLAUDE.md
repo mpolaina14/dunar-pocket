@@ -39,13 +39,18 @@ Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, HeroUI v3, ESLin
 
 Decidido en B-07: PostgreSQL en Neon con Drizzle como ORM (Prisma queda descartado; el motivo está en el registro de la decisión).
 
-- Cuando se instale Drizzle, fija la versión exacta (sin `^`).
-- `DATABASE_URL` y `DATABASE_URL_UNPOOLED` serán las primeras variables de entorno reales. Viven en Vercel, por entorno, y nunca en el repositorio (ver Despliegue).
+- Drizzle y sus paquetes se instalan con versión exacta (sin `^`).
+- `DATABASE_URL` y `DATABASE_URL_UNPOOLED` son las primeras variables de entorno reales. Viven en Vercel, por entorno, y nunca en el repositorio (ver Despliegue).
 - El plan gratuito de Neon suspende el cómputo tras 5 minutos sin uso: la primera petición puede tardar más (arranque en frío). No lo trates como un fallo.
-- El paquete `server-only` se instalará cuando exista el primer archivo de datos (B-10).
+- `src/db/client.ts` importa `server-only`: la base de datos solo se usa desde el servidor.
 - Drizzle 0.45 estable con versión exacta (la 1.0 sigue en candidata). Driver `neon-http`, recomendado por Neon para Vercel: `db.transaction()` lanza un error con ese driver; para atomicidad usa `db.batch` o las restricciones de la base. Si hace falta una transacción interactiva (o Better Auth la exige), se cambia a `neon-serverless` solo en `src/db/client.ts`.
 - Migraciones con `drizzle-kit generate` y `migrate` (archivos versionados en el repo, revisados en la PR). `push` solo para pruebas desechables. Las migraciones usan la cadena directa de Neon (`DATABASE_URL_UNPOOLED`); la aplicación usa la agrupada (`DATABASE_URL`).
 - Las migraciones están en `drizzle/` y las genera `drizzle-kit`: no las edites a mano ni las formatees (Prettier las ignora). `drizzle.config.ts` carga `.env.local`; `.env.example` lista las variables sin valores.
+- Esquema (B-10), en `src/db/schema/`: `autenticacion.ts` (`user`, con la forma de Better Auth más la columna `rol`), `categorias.ts` (`categorias_por_defecto` y `categorias`), `movimientos.ts` y `presupuestos.ts`. Las tablas de sesión, cuenta y verificación de Better Auth llegan en la Fase 3 con su CLI.
+- Convenciones del esquema: las tablas de Better Auth conservan sus nombres en inglés y las nuestras van en español y en plural; en TypeScript se escribe camelCase y la base guarda snake_case (`casing: "snake_case"` en `drizzle.config.ts` y en `client.ts`). Los ids son `uuid`, salvo `user.id` (texto, de Better Auth).
+- Importes siempre en céntimos (`integer`, con `CHECK > 0`). Las fechas son `date` en modo texto. El mes de un presupuesto es una fecha en día 1. El tipo de un movimiento (gasto o ingreso) lo da su categoría.
+- Las categorías se archivan (`archivada_en`), no se borran: una categoría con movimientos no se puede eliminar (`restrict`). Borrar un usuario borra todos sus datos (`cascade`).
+- Un único presupuesto global por usuario y mes (`categoria_id` vacío) lo garantizan dos índices únicos parciales. Un solo índice no valdría: en SQL, `null` no es igual a `null`.
 - Un proyecto de Neon con dos ramas: `production` y `development`. Vercel usa `production` en Production y `development` en Preview y Development; tu máquina usa `development` desde `.env.local`.
 
 Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador de Drizzle ([registro de la decisión](https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk)).
