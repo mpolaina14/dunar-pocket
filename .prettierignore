@@ -1,4 +1,6 @@
 pnpm-lock.yaml
+# migraciones generadas por drizzle-kit
+drizzle/
 # playwright
 test-results/
 playwright-report/

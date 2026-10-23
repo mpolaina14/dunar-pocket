@@ -45,6 +45,7 @@ Decidido en B-07: PostgreSQL en Neon con Drizzle como ORM (Prisma queda descarta
 - El paquete `server-only` se instalará cuando exista el primer archivo de datos (B-10).
 - Drizzle 0.45 estable con versión exacta (la 1.0 sigue en candidata). Driver `neon-http`, recomendado por Neon para Vercel: `db.transaction()` lanza un error con ese driver; para atomicidad usa `db.batch` o las restricciones de la base. Si hace falta una transacción interactiva (o Better Auth la exige), se cambia a `neon-serverless` solo en `src/db/client.ts`.
 - Migraciones con `drizzle-kit generate` y `migrate` (archivos versionados en el repo, revisados en la PR). `push` solo para pruebas desechables. Las migraciones usan la cadena directa de Neon (`DATABASE_URL_UNPOOLED`); la aplicación usa la agrupada (`DATABASE_URL`).
+- Las migraciones están en `drizzle/` y las genera `drizzle-kit`: no las edites a mano ni las formatees (Prettier las ignora). `drizzle.config.ts` carga `.env.local`; `.env.example` lista las variables sin valores.
 - Un proyecto de Neon con dos ramas: `production` y `development`. Vercel usa `production` en Production y `development` en Preview y Development; tu máquina usa `development` desde `.env.local`.
 
 Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador de Drizzle ([registro de la decisión](https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk)).
