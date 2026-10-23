@@ -137,6 +137,7 @@ Los documentos del proyecto están alojados fuera del repositorio y son privados
 - [Backlog de tickets](https://claude.ai/code/artifact/d95fc1c9-85fb-4490-a4bc-fb2e03175752)
 - [Guía técnica de arranque](https://claude.ai/code/artifact/60230e98-032a-44cd-b8b8-147b549d2878)
 - [Convenciones del proyecto](https://claude.ai/code/artifact/ce0ae0d8-a01f-4b96-a9ee-2ac1b25ba270)
+- [Decisión de autenticación (B-08)](https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk): Better Auth, sesiones y roles en servidor
 - [Estructura del proyecto (B-09)](https://claude.ai/artifact/WoNy7ZUsH2Rt88Zuiuk6V7): carpetas, capas y reglas de importación
 - [Decisión de persistencia (B-07)](https://claude.ai/artifact/2RocVYcGpJAm3gRUHYnD9K): Postgres en Neon con Drizzle
 - [Tablero de seguimiento](https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1)
