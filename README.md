@@ -50,6 +50,8 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 | `pnpm test:e2e`     | Ejecuta los tests de extremo a extremo (Playwright)          |
 | `pnpm test:e2e:ui`  | Abre la interfaz de Playwright para depurar los tests E2E    |
 | `pnpm check`        | Ejecuta lint, formato, tipos y tests unitarios seguidos      |
+| `pnpm db:generate`  | Genera una migración SQL a partir de los cambios del esquema |
+| `pnpm db:migrate`   | Aplica las migraciones pendientes a la base de `.env.local`  |
 
 ## Estructura del proyecto
 
@@ -72,6 +74,18 @@ src/
 ```
 
 Algunas reglas de importación se comprueban con ESLint: el dominio no puede importar Next, React ni la base de datos; la interfaz no accede a la base de datos; y el acceso a datos no depende de la interfaz. El detalle y los motivos están en el documento de estructura (ver Documentación).
+
+## Base de datos
+
+PostgreSQL en [Neon](https://neon.com) con Drizzle como ORM. Un único proyecto de Neon con dos ramas: `production` (la usa Vercel en producción) y `development` (la usan tu máquina y las vistas previas).
+
+Para trabajar en local:
+
+1. Copia `.env.example` a `.env.local`.
+2. Rellena las dos cadenas de conexión de la rama `development` desde el botón Connect del panel de Neon: `DATABASE_URL` (con «Connection pooling» activado) y `DATABASE_URL_UNPOOLED` (desactivado).
+3. `.env.local` no se sube al repositorio. No pegues nunca estas cadenas en un issue, una PR ni un chat.
+
+El esquema está en `src/db/schema/`. Tras cambiarlo, `pnpm db:generate` crea una migración en `drizzle/` y `pnpm db:migrate` la aplica a la base de `.env.local`. Las migraciones se revisan en la PR y no se editan a mano.
 
 ## Calidad del código
 
@@ -99,7 +113,7 @@ La aplicación se despliega en Vercel, conectado a este repositorio de GitHub:
 - **Producción:** [dunar-pocket.vercel.app](https://dunar-pocket.vercel.app/). Se actualiza sola cada vez que se hace merge en `main`. La portada es todavía provisional.
 - **Vista previa:** cada pull request genera su propia URL. El enlace aparece en un comentario de Vercel en la PR. Las vistas previas están protegidas: hay que iniciar sesión en Vercel para abrirlas.
 - **Node:** Vercel toma la versión del campo `engines` de `package.json` (24), la misma que `.nvmrc` y el CI.
-- **Variables de entorno:** se configuran en Vercel (Settings, Environment Variables), separadas por entorno (Production, Preview y Development). No se suben al repositorio. Por ahora no hay ninguna.
+- **Variables de entorno:** se configuran en Vercel (Settings, Environment Variables), separadas por entorno (Production, Preview y Development). No se suben al repositorio. Por ahora solo existe `DATABASE_URL` (la cadena agrupada de Neon): la rama `production` en Production y la rama `development` en Preview y Development.
 
 Vercel hace su propio build, independiente del CI de GitHub Actions. Su check aparece en las PR, pero no es obligatorio: lo que bloquea el merge son `Calidad` y `E2E`.
 
@@ -137,6 +151,7 @@ Los documentos del proyecto están alojados fuera del repositorio y son privados
 - [Backlog de tickets](https://claude.ai/code/artifact/d95fc1c9-85fb-4490-a4bc-fb2e03175752)
 - [Guía técnica de arranque](https://claude.ai/code/artifact/60230e98-032a-44cd-b8b8-147b549d2878)
 - [Convenciones del proyecto](https://claude.ai/code/artifact/ce0ae0d8-a01f-4b96-a9ee-2ac1b25ba270)
+- [Decisión de autenticación (B-08)](https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk): Better Auth, sesiones y roles en servidor
 - [Estructura del proyecto (B-09)](https://claude.ai/artifact/WoNy7ZUsH2Rt88Zuiuk6V7): carpetas, capas y reglas de importación
 - [Decisión de persistencia (B-07)](https://claude.ai/artifact/2RocVYcGpJAm3gRUHYnD9K): Postgres en Neon con Drizzle
 - [Tablero de seguimiento](https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1)

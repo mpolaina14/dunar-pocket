@@ -30,6 +30,7 @@ Simulación de trabajo en una empresa: app web de control de gastos e ingresos p
 - Tablero de seguimiento: https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1
 - Bocetos (móvil, escritorio y estados): https://claude.ai/artifact/K9ZWsTUem7i5A7L8UJXdxo
 - Decisión B-07, persistencia (Postgres en Neon con Drizzle): https://claude.ai/artifact/2RocVYcGpJAm3gRUHYnD9K
+- Decisión B-08, autenticación (Better Auth, sesiones en base de datos, roles en servidor): https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk
 - Estructura del proyecto (B-09): carpetas, capas y reglas de importación: https://claude.ai/artifact/WoNy7ZUsH2Rt88Zuiuk6V7
 
 ## Stack
@@ -39,13 +40,23 @@ Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, HeroUI v3, ESLin
 Decidido en B-07: PostgreSQL en Neon con Drizzle como ORM (Prisma queda descartado; el motivo está en el registro de la decisión).
 
 - Cuando se instale Drizzle, fija la versión exacta (sin `^`).
-- `DATABASE_URL` será la primera variable de entorno real. Vive en Vercel, por entorno, y nunca en el repositorio (ver Despliegue).
+- `DATABASE_URL` y `DATABASE_URL_UNPOOLED` serán las primeras variables de entorno reales. Viven en Vercel, por entorno, y nunca en el repositorio (ver Despliegue).
 - El plan gratuito de Neon suspende el cómputo tras 5 minutos sin uso: la primera petición puede tardar más (arranque en frío). No lo trates como un fallo.
 - El paquete `server-only` se instalará cuando exista el primer archivo de datos (B-10).
+- Drizzle 0.45 estable con versión exacta (la 1.0 sigue en candidata). Driver `neon-http`, recomendado por Neon para Vercel: `db.transaction()` lanza un error con ese driver; para atomicidad usa `db.batch` o las restricciones de la base. Si hace falta una transacción interactiva (o Better Auth la exige), se cambia a `neon-serverless` solo en `src/db/client.ts`.
+- Migraciones con `drizzle-kit generate` y `migrate` (archivos versionados en el repo, revisados en la PR). `push` solo para pruebas desechables. Las migraciones usan la cadena directa de Neon (`DATABASE_URL_UNPOOLED`); la aplicación usa la agrupada (`DATABASE_URL`).
+- Las migraciones están en `drizzle/` y las genera `drizzle-kit`: no las edites a mano ni las formatees (Prettier las ignora). `drizzle.config.ts` carga `.env.local`; `.env.example` lista las variables sin valores.
+- Un proyecto de Neon con dos ramas: `production` y `development`. Vercel usa `production` en Production y `development` en Preview y Development; tu máquina usa `development` desde `.env.local`.
+
+Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador de Drizzle ([registro de la decisión](https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk)).
+
+- Sesiones en base de datos con cookie; contraseñas con scrypt (por defecto). Fija la versión exacta de Better Auth al instalarla.
+- Los roles (usuario y administrador) van en una columna propia. No se usa el plugin de administración de Better Auth, porque su suplantación de usuarios rompe la regla de que el administrador nunca ve movimientos.
+- `proxy.ts` solo redirige según la cookie. La sesión y el rol se validan en el servidor en cada Server Action y en cada consulta, y las consultas filtran siempre por el usuario de la sesión.
+- Puntos a verificar al implementar (Fase 3): compatibilidad con `neon-http`, encaje de `proxy.ts` con `cacheComponents`, que el rol no se pueda enviar al registrarse y la protección contra intentos repetidos de inicio de sesión.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 
-- Better Auth para la autenticación.
 - Zod para validación compartida, React Hook Form con Zod en formularios.
 - pnpm, Husky con lint-staged, Playwright con axe para accesibilidad.
 - La librería de gráficos (HeroUI no incluye) se decide en su propio ticket (D-03).
