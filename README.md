@@ -52,6 +52,7 @@ Se irán incorporando más herramientas por fases. Las decisiones técnicas y su
 | `pnpm check`        | Ejecuta lint, formato, tipos y tests unitarios seguidos      |
 | `pnpm db:generate`  | Genera una migración SQL a partir de los cambios del esquema |
 | `pnpm db:migrate`   | Aplica las migraciones pendientes a la base de `.env.local`  |
+| `pnpm db:seed`      | Recrea el usuario demo con datos de ejemplo (en desarrollo)  |
 
 ## Estructura del proyecto
 
@@ -88,6 +89,10 @@ Para trabajar en local:
 El esquema está en `src/db/schema/`, un archivo por grupo de tablas: `autenticacion.ts` (usuarios), `categorias.ts`, `movimientos.ts` y `presupuestos.ts`. El cliente está en `src/db/client.ts` y solo se importa desde código de servidor. Los importes se guardan en céntimos.
 
 Tras cambiar el esquema, `pnpm db:generate` crea una migración en `drizzle/` y `pnpm db:migrate` la aplica a la base de `.env.local`. Las migraciones se revisan en la PR y no se editan a mano.
+
+### Datos de ejemplo
+
+`pnpm db:seed` deja en la base de `.env.local` un usuario de demostración (`demo@dunar-pocket.test`) con 10 categorías, unos 12 meses de movimientos y presupuestos mensuales. Se puede ejecutar cuantas veces haga falta: solo borra y recrea ese usuario, y los importes y las fechas son siempre los mismos. Se niega a ejecutarse con `VERCEL_ENV=production`. El usuario no tiene contraseña, así que no puede iniciar sesión hasta que se incorpore la autenticación.
 
 ## Calidad del código
 
