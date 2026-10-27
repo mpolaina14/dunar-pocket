@@ -11,9 +11,14 @@ import {
   TextField,
   WarningIcon,
 } from "@heroui/react";
+import { notFound } from "next/navigation";
 
 // Página temporal de B-03: sirve para comprobar tokens y componentes de HeroUI.
 export default function DesignTestPage() {
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   return (
     <main className="flex w-full max-w-md flex-col gap-8 p-4">
       <section className="flex flex-col gap-4">

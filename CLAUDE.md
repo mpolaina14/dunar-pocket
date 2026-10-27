@@ -78,7 +78,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
   - `schemas.ts`: esquemas Zod.
   - `domain/`: lógica de negocio pura, con sus `*.test.ts` al lado.
 - Fuera de las funcionalidades: `src/db/schema/` (esquema central de Drizzle) y `src/db/client.ts`; `src/lib/` (dinero, fechas, textos de interfaz); `src/components/ui/` (componentes compartidos); `src/app/` (rutas finas que solo componen); `e2e/` (tests de extremo a extremo).
-- Las pantallas de la aplicación viven en el grupo de rutas `src/app/(app)/`, cuyo `layout.tsx` monta el esqueleto: enlace «Saltar al contenido», cabecera (solo móvil), barra lateral (desde `md`), `<main id="contenido">` y barra inferior (solo móvil). Las páginas no llevan `<main>` propio. Ese esqueleto y su navegación están en `src/components/layout/`; los destinos de la navegación se declaran una sola vez en `enlaces.ts`. `/design-test` queda fuera del grupo a propósito (B-14).
+- Las pantallas de la aplicación viven en el grupo de rutas `src/app/(app)/`, cuyo `layout.tsx` monta el esqueleto: enlace «Saltar al contenido», cabecera (solo móvil), barra lateral (desde `md`), `<main id="contenido">` y barra inferior (solo móvil). Las páginas no llevan `<main>` propio. Ese esqueleto y su navegación están en `src/components/layout/`; los destinos de la navegación se declaran una sola vez en `enlaces.ts`. `/design-test` queda fuera del grupo a propósito.
 - Sin archivos `index.ts` que reexporten (barrels). Alias de importación: `@/*` apunta a `src/*`. Los nombres del dominio van en español.
 - Reglas de importación, comprobadas por ESLint (`no-restricted-imports` en `eslint.config.mjs`; si cambias una capa, cambia también la regla):
   - El dominio no importa `next`, `react`, `react-dom`, `@/db`, `drizzle-orm`, `server-only`, ni `queries`, `mutations` o `actions`. Recibe lo que necesita por parámetros.
@@ -99,7 +99,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - Espaciado y radios: valores por defecto de Tailwind y HeroUI (base de 4 px, radio de 0,5 rem). Objetivo táctil mínimo de 44 px (`min-h-11`).
 - Solo modo claro. El modo oscuro queda fuera de alcance.
 - HeroUI v3 no usa proveedor: se tematiza con variables CSS. Antes de usar un componente, mira su API real en `node_modules/@heroui/react`, porque v3 cambia respecto a v2.
-- `/design-test` es una página temporal para probar tokens y componentes. No es parte de la aplicación final (ver B-14).
+- `/design-test` es una página para probar tokens y componentes. Solo existe en desarrollo: con `NODE_ENV=production` (build de producción y vistas previas de Vercel) llama a `notFound()` y devuelve un 404, y un test E2E lo comprueba (B-14). No es parte de la aplicación final.
 
 ## Tests
 
