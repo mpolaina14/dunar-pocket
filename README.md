@@ -142,7 +142,7 @@ Los estilos se apoyan en Tailwind CSS y en HeroUI v3, que se tematiza con variab
 - **Espaciado y radios:** se usan los valores por defecto de Tailwind y HeroUI (base de 4px y radio de 0,5 rem).
 - **Solo modo claro:** el modo oscuro queda fuera del alcance por ahora.
 
-La ruta `/design-test` es una página temporal que reúne títulos, botones, campos, estados de presupuesto y esqueletos de carga. Sirve para comprobar visualmente los tokens y los componentes, y no forma parte de la aplicación final.
+La ruta `/design-test` es una página temporal que reúne títulos, botones, campos, estados de presupuesto y esqueletos de carga. Sirve para comprobar visualmente los tokens y los componentes. Solo existe en desarrollo: en producción (y en las vistas previas de Vercel) devuelve un 404. No forma parte de la aplicación final.
 
 ## Estado del proyecto
 
