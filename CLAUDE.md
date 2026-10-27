@@ -78,6 +78,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
   - `schemas.ts`: esquemas Zod.
   - `domain/`: lógica de negocio pura, con sus `*.test.ts` al lado.
 - Fuera de las funcionalidades: `src/db/schema/` (esquema central de Drizzle) y `src/db/client.ts`; `src/lib/` (dinero, fechas, textos de interfaz); `src/components/ui/` (componentes compartidos); `src/app/` (rutas finas que solo componen); `e2e/` (tests de extremo a extremo).
+- Las pantallas de la aplicación viven en el grupo de rutas `src/app/(app)/`, cuyo `layout.tsx` monta el esqueleto: enlace «Saltar al contenido», cabecera (solo móvil), barra lateral (desde `md`), `<main id="contenido">` y barra inferior (solo móvil). Las páginas no llevan `<main>` propio. Ese esqueleto y su navegación están en `src/components/layout/`; los destinos de la navegación se declaran una sola vez en `enlaces.ts`. `/design-test` queda fuera del grupo a propósito (B-14).
 - Sin archivos `index.ts` que reexporten (barrels). Alias de importación: `@/*` apunta a `src/*`. Los nombres del dominio van en español.
 - Reglas de importación, comprobadas por ESLint (`no-restricted-imports` en `eslint.config.mjs`; si cambias una capa, cambia también la regla):
   - El dominio no importa `next`, `react`, `react-dom`, `@/db`, `drizzle-orm`, `server-only`, ni `queries`, `mutations` o `actions`. Recibe lo que necesita por parámetros.
