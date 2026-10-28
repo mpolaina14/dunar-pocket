@@ -19,7 +19,7 @@ Simulación de trabajo en una empresa: app web de control de gastos e ingresos p
 
 ## Fases
 
-1. Kickoff (cerrada). 2. Base (en curso). 3. Auth y roles. 4. Core (movimientos, categorías, presupuestos, recurrentes). 5. Dashboard y UX. 6. Calidad (tests, accesibilidad, rendimiento). 7. Entrega.
+1. Kickoff (cerrada). 2. Base (cerrada). 3. Auth y roles (en curso). 4. Core (movimientos, categorías, presupuestos, recurrentes). 5. Dashboard y UX. 6. Calidad (tests, accesibilidad, rendimiento). 7. Entrega.
 
 ## Documentos de referencia
 
@@ -28,6 +28,7 @@ Simulación de trabajo en una empresa: app web de control de gastos e ingresos p
 - Guía técnica de arranque: https://claude.ai/code/artifact/60230e98-032a-44cd-b8b8-147b549d2878
 - Convenciones del proyecto: https://claude.ai/code/artifact/ce0ae0d8-a01f-4b96-a9ee-2ac1b25ba270
 - Tablero de seguimiento: https://claude.ai/code/artifact/d44c1c1e-3e14-4499-8f4e-46fe45b045d1
+- Retro de la Fase 2 (qué salió bien, a tener en cuenta y tareas para la Fase 3): https://claude.ai/artifact/TY5DPkcMk5ukCo9hmV1UCT
 - Bocetos (móvil, escritorio y estados): https://claude.ai/artifact/K9ZWsTUem7i5A7L8UJXdxo
 - Decisión B-07, persistencia (Postgres en Neon con Drizzle): https://claude.ai/artifact/2RocVYcGpJAm3gRUHYnD9K
 - Decisión B-08, autenticación (Better Auth, sesiones en base de datos, roles en servidor): https://claude.ai/artifact/F1SSF1h6jDbBgve21BKVqk
@@ -157,4 +158,4 @@ Lighthouse 90 o más, cobertura de 80 % o más en lógica de negocio, cero fallo
 
 ## Estado actual
 
-Fase 1 cerrada. Fase 2 (base) en curso. Consulta el tablero para ver el estado de cada ticket.
+Fases 1 y 2 cerradas. Fase 3 (autenticación y roles) en curso. Consulta el tablero para ver el estado de cada ticket.
