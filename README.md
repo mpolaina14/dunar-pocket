@@ -148,7 +148,7 @@ La ruta `/design-test` es una página temporal que reúne títulos, botones, cam
 
 El trabajo se organiza en siete fases: kickoff, base, autenticación y roles, núcleo (movimientos, categorías, presupuestos y recurrentes), panel y experiencia de usuario, calidad y entrega.
 
-Situación actual: fase 1 (kickoff) cerrada y fase 2 (base) en curso. El seguimiento de tickets está en el tablero del proyecto.
+Situación actual: fases 1 (kickoff) y 2 (base) cerradas, y fase 3 (autenticación y roles) en curso. El seguimiento de tickets está en el tablero del proyecto.
 
 ## Documentación
 
