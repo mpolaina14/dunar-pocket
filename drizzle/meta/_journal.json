@@ -8,6 +8,20 @@
       "when": 1792793766673,
       "tag": "0000_inicial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793222517708,
+      "tag": "0001_useful_sphinx",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793273701217,
+      "tag": "0002_kind_wrecker",
+      "breakpoints": true
     }
   ]
 }

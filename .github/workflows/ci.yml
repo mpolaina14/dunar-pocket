@@ -16,6 +16,16 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Valores de relleno, públicos y sin ningún efecto: el build de Next carga los
+# módulos de base de datos y de autenticación, que exigen estas variables, pero
+# el CI no se conecta a ninguna base de datos. Los valores reales viven solo en
+# Vercel y en .env.local, nunca aquí. Si se añade una variable de entorno
+# obligatoria nueva, añade también su relleno.
+env:
+  DATABASE_URL: postgresql://relleno:relleno@localhost/relleno
+  BETTER_AUTH_SECRET: relleno-de-ci-sin-valor-0123456789abcdef
+  BETTER_AUTH_URL: http://localhost:3100
+
 jobs:
   calidad:
     name: Calidad

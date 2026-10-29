@@ -84,9 +84,10 @@ Para trabajar en local:
 
 1. Copia `.env.example` a `.env.local`.
 2. Rellena las dos cadenas de conexión de la rama `development` desde el botón Connect del panel de Neon: `DATABASE_URL` (con «Connection pooling» activado) y `DATABASE_URL_UNPOOLED` (desactivado).
-3. `.env.local` no se sube al repositorio. No pegues nunca estas cadenas en un issue, una PR ni un chat.
+3. Para la autenticación, añade `BETTER_AUTH_SECRET` (genéralo con `openssl rand -base64 32`; cada entorno usa uno distinto) y `BETTER_AUTH_URL` (en local, `http://localhost:3000`).
+4. `.env.local` no se sube al repositorio. No pegues nunca estas cadenas en un issue, una PR ni un chat.
 
-El esquema está en `src/db/schema/`, un archivo por grupo de tablas: `autenticacion.ts` (usuarios), `categorias.ts`, `movimientos.ts` y `presupuestos.ts`. El cliente está en `src/db/client.ts` y solo se importa desde código de servidor. Los importes se guardan en céntimos.
+El esquema está en `src/db/schema/`, un archivo por grupo de tablas: `autenticacion.ts` (usuarios, sesiones, cuentas, verificaciones y límite de peticiones), `categorias.ts`, `movimientos.ts` y `presupuestos.ts`. El cliente está en `src/db/client.ts` y solo se importa desde código de servidor. Los importes se guardan en céntimos.
 
 Tras cambiar el esquema, `pnpm db:generate` crea una migración en `drizzle/` y `pnpm db:migrate` la aplica a la base de `.env.local`. Las migraciones se revisan en la PR y no se editan a mano.
 
@@ -111,6 +112,8 @@ El flujo de CI está en `.github/workflows/ci.yml` (GitHub Actions) y se ejecuta
 
 La ruleset de `main` exige que los dos checks (`Calidad` y `E2E`) pasen antes de poder hacer el merge. Si renombras un job en el workflow, hay que actualizar también la ruleset.
 
+El CI no se conecta a ninguna base de datos: `ci.yml` define unas variables de entorno de relleno (`DATABASE_URL`, `BETTER_AUTH_SECRET` y `BETTER_AUTH_URL`) solo para que el build pueda cargar los módulos que las exigen. No son secretos y no sirven para nada más. Si se añade una variable obligatoria nueva, hay que añadir su relleno.
+
 El CI ejecuta los mismos scripts que tienes en local, así que un fallo se reproduce con el comando del paso que falló. `pnpm typecheck` genera antes los tipos de Next (`next typegen`), por eso funciona también en un clon limpio.
 
 ## Despliegue
@@ -120,7 +123,7 @@ La aplicación se despliega en Vercel, conectado a este repositorio de GitHub:
 - **Producción:** [dunar-pocket.vercel.app](https://dunar-pocket.vercel.app/). Se actualiza sola cada vez que se hace merge en `main`. La portada es todavía provisional.
 - **Vista previa:** cada pull request genera su propia URL. El enlace aparece en un comentario de Vercel en la PR. Las vistas previas están protegidas: hay que iniciar sesión en Vercel para abrirlas.
 - **Node:** Vercel toma la versión del campo `engines` de `package.json` (24), la misma que `.nvmrc` y el CI.
-- **Variables de entorno:** se configuran en Vercel (Settings, Environment Variables), separadas por entorno (Production, Preview y Development). No se suben al repositorio. Por ahora solo existe `DATABASE_URL` (la cadena agrupada de Neon): la rama `production` en Production y la rama `development` en Preview y Development.
+- **Variables de entorno:** se configuran en Vercel (Settings, Environment Variables), separadas por entorno (Production, Preview y Development). No se suben al repositorio. Existen `DATABASE_URL` (la cadena agrupada de Neon: la rama `production` en Production y la rama `development` en Preview y Development), `BETTER_AUTH_SECRET` (un valor distinto en cada entorno) y `BETTER_AUTH_URL` (solo en Production; en Preview no se define y Better Auth deduce el origen de la petición, a confirmar cuando existan los formularios).
 
 Vercel hace su propio build, independiente del CI de GitHub Actions. Su check aparece en las PR, pero no es obligatorio: lo que bloquea el merge son `Calidad` y `E2E`.
 
