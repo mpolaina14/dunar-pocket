@@ -41,6 +41,7 @@ Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, HeroUI v3, ESLin
 Decidido en B-07: PostgreSQL en Neon con Drizzle como ORM (Prisma queda descartado; el motivo está en el registro de la decisión).
 
 - Drizzle y sus paquetes se instalan con versión exacta (sin `^`).
+- `BETTER_AUTH_SECRET` (distinto en cada entorno) y `BETTER_AUTH_URL` son las variables de la autenticación; se gestionan igual que las de la base de datos.
 - `DATABASE_URL` y `DATABASE_URL_UNPOOLED` son las primeras variables de entorno reales. Viven en Vercel, por entorno, y nunca en el repositorio (ver Despliegue).
 - El plan gratuito de Neon suspende el cómputo tras 5 minutos sin uso: la primera petición puede tardar más (arranque en frío). No lo trates como un fallo.
 - `src/db/client.ts` importa `server-only`: la base de datos solo se usa desde el servidor.
@@ -60,7 +61,12 @@ Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador 
 - Sesiones en base de datos con cookie; contraseñas con scrypt (por defecto). Fija la versión exacta de Better Auth al instalarla.
 - Los roles (usuario y administrador) van en una columna propia. No se usa el plugin de administración de Better Auth, porque su suplantación de usuarios rompe la regla de que el administrador nunca ve movimientos.
 - `proxy.ts` solo redirige según la cookie. La sesión y el rol se validan en el servidor en cada Server Action y en cada consulta, y las consultas filtran siempre por el usuario de la sesión.
-- Puntos a verificar al implementar (Fase 3): compatibilidad con `neon-http`, encaje de `proxy.ts` con `cacheComponents`, que el rol no se pueda enviar al registrarse y la protección contra intentos repetidos de inicio de sesión.
+- Verificado en la spike de A-01 (Better Auth 1.7.14, con el detalle en el registro de la decisión):
+  - `neon-http` funciona: el adaptador usa `transaction: false` y ejecuta en secuencia, así que el registro no es atómico. Se acepta ese riesgo; si hiciera falta atomicidad real, se cambia a `neon-serverless` con `transaction: true`.
+  - `proxy.ts` solo lee la cookie con `getSessionCookie` (sin base de datos). Leer la sesión en un layout con `headers()` exige un `Suspense` alrededor de un componente propio, por `cacheComponents`.
+  - El rol se declara en `user.additionalFields.rol` con `input: false` y `defaultValue: "usuario"`: un registro con `rol` se ignora. Falta probar la actualización de perfil (A-06).
+  - Intentos repetidos: `rateLimit.enabled` y una regla en `customRules["/sign-in/email"]`. El almacenamiento será `database` (tabla `rate_limit`), porque la memoria no sirve en Vercel. Por defecto el límite no está activo en desarrollo.
+  - El CLI (`pnpm dlx auth@latest generate`) exige quitar `import "server-only"` de `src/db/client.ts` mientras corre; vuelve a ponerlo después. Adapta lo generado a nuestras convenciones y no sobrescribas `src/db/schema/autenticacion.ts`.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 
@@ -118,6 +124,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
 - `pnpm typecheck` ejecuta `next typegen` antes de `tsc`, porque `.next` no existe en un clon limpio ni en CI.
 - Las acciones se fijan por versión mayor (por ejemplo `@v7`). La versión de Node sale de `.nvmrc` (24) y se repite en `engines` de `package.json`, que es lo que lee Vercel: si la cambias, cámbiala en los dos sitios. pnpm se toma de `packageManager`.
 - Permisos mínimos (`contents: read`). No añadas secretos ni permisos de escritura sin una decisión.
+- El CI no tiene base de datos. `ci.yml` define variables de entorno de relleno (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`) solo para que el build cargue los módulos que las exigen (decisión de A-01). No son secretos. Si añades una variable obligatoria nueva, añade también su relleno. Los E2E que necesiten datos reales exigirán una decisión propia (A-10): con el driver `neon-http` no vale un Postgres local.
 
 ## Despliegue
 
