@@ -72,6 +72,11 @@ Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador 
   - `acciones.ts` lleva `"use server"`, así que solo exporta funciones asíncronas y tipos. La acción `registrar` devuelve siempre un `EstadoRegistro` completo (errores por campo, error general y valores escritos, nunca la contraseña) y llama a `auth.api.signUpEmail`. El `redirect` va fuera del `try`, porque funciona lanzando una excepción.
   - El registro revela si un email ya existe (lo pide el criterio de US-01 y Better Auth devuelve `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL`). En el inicio de sesión (A-03) el mensaje de error sí es genérico.
   - `formulario-registro.tsx` usa `useActionState` y el `Form` de HeroUI con `validationBehavior="aria"` (sin el mensaje nativo del navegador). Los errores llegan a cada campo con `validationErrors`. El `defaultValue` va en el `TextField`, no en el `Input`. El manejador `onSubmit` se tipa con `React.SyntheticEvent<HTMLFormElement>`, porque el `Form` de HeroUI tipa el suyo con el `FormEvent` obsoleto.
+- Inicio de sesión (A-03):
+  - Se hace desde el navegador con `authClient` (`cliente.ts`, `createAuthClient()` sin URL), no con una Server Action. Motivo: el límite de intentos de Better Auth solo actúa en las peticiones HTTP que pasan por `/api/auth`; `auth.api.signInEmail` llamado desde el servidor se lo salta. Cualquier otra ruta de inicio de sesión o de recuperación de contraseña debe pasar también por el cliente.
+  - El límite no está activo en desarrollo: se prueba con `pnpm build && pnpm start`.
+  - Ante cualquier fallo, salvo el 429, el mensaje es el mismo («Email o contraseña incorrectos»), para no revelar si el email existe. `esquemaLogin` solo exige contraseña no vacía: la regla de 8 caracteres es del registro.
+  - Tras iniciar sesión, `router.push("/")` y `router.refresh()`, para que el servidor repinte con la cookie nueva.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 

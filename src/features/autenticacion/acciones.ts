@@ -2,7 +2,7 @@
 
 import { APIError } from "better-auth/api";
 import { redirect } from "next/navigation";
-import z from "zod";
+import { z } from "zod";
 import { auth } from "./auth";
 import { esquemaRegistro } from "./esquemas";
 
