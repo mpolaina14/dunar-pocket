@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { esquemaRegistro } from "./esquemas";
+import { esquemaLogin, esquemaRegistro } from "./esquemas";
 
 describe("esquemaRegistro", () => {
   const datosValidos = {
@@ -121,6 +121,80 @@ describe("esquemaRegistro", () => {
     const resultado = esquemaRegistro.safeParse(datos);
     if (!resultado.success) {
       throw new Error("El esquema rechazó una contraseña válida con espacios");
+    }
+    expect(resultado.data.password).toBe(password);
+  });
+});
+
+describe("esquemaLogin", () => {
+  const datosValidos = {
+    email: "fabio@mail.com",
+    password: "12345678",
+  };
+
+  it("Acepta datos válidos y limpia el email en login", () => {
+    const datos = {
+      ...datosValidos,
+      email: "  Fabio@Mail.COM",
+    };
+    const resultado = esquemaLogin.safeParse(datos);
+    if (!resultado.success) {
+      throw new Error("El esquema rechazó los datos válidos");
+    }
+    expect(resultado.data.email).toBe("fabio@mail.com");
+  });
+
+  it.each(["", "    "])("Rechaza un email %j", (email) => {
+    const datos = {
+      ...datosValidos,
+      email,
+    };
+    const resultado = esquemaLogin.safeParse(datos);
+    if (resultado.success) {
+      throw new Error("El esquema ha dejado pasar emails inválidos");
+    }
+    const errores = z.flattenError(resultado.error);
+    expect(errores.fieldErrors.email).toEqual(["Escribe tu email"]);
+  });
+
+  it.each(["fabiomail.com", "fabio@", "fa bio@mail.com", "fabio@mail"])(
+    "Rechaza un email mal formado %j",
+    (email) => {
+      const datos = {
+        ...datosValidos,
+        email,
+      };
+      const resultado = esquemaLogin.safeParse(datos);
+      if (resultado.success) {
+        throw new Error("El esquema ha dejado pasar emails inválidos");
+      }
+      const errores = z.flattenError(resultado.error);
+      expect(errores.fieldErrors.email).toEqual(["Email no válido"]);
+    },
+  );
+
+  it("Rechaza una contraseña vacía", () => {
+    const datos = {
+      ...datosValidos,
+      password: "",
+    };
+
+    const resultado = esquemaLogin.safeParse(datos);
+    if (resultado.success) {
+      throw new Error("El esquema ha dejado pasar contraseñas vacías");
+    }
+    const errores = z.flattenError(resultado.error);
+    expect(errores.fieldErrors.password).toEqual(["Contraseña obligatoria"]);
+  });
+
+  it.each(["a", "     "])("Acepta la contraseña %j", (password) => {
+    const datos = {
+      ...datosValidos,
+      password,
+    };
+    const resultado = esquemaLogin.safeParse(datos);
+    if (!resultado.success) {
+      throw new Error("El esquema rechazó una contraseña válida");
     }
     expect(resultado.data.password).toBe(password);
   });
