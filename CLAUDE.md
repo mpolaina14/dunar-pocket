@@ -67,10 +67,15 @@ Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador 
   - El rol se declara en `user.additionalFields.rol` con `input: false` y `defaultValue: "usuario"`: un registro con `rol` se ignora. Falta probar la actualización de perfil (A-06).
   - Intentos repetidos: `rateLimit.enabled` y una regla en `customRules["/sign-in/email"]`. El almacenamiento será `database` (tabla `rate_limit`), porque la memoria no sirve en Vercel. Por defecto el límite no está activo en desarrollo.
   - El CLI (`pnpm dlx auth@latest generate`) exige quitar `import "server-only"` de `src/db/client.ts` mientras corre; vuelve a ponerlo después. Adapta lo generado a nuestras convenciones y no sobrescribas `src/db/schema/autenticacion.ts`.
+- Registro (A-02), en `src/features/autenticacion/`:
+  - `esquemas.ts` es la única fuente de reglas de validación (Zod 4, versión exacta). Lo usan el formulario, en el navegador, y la Server Action, en el servidor; el servidor siempre vuelve a validar. Normaliza el email (sin espacios y en minúsculas) y no recorta la contraseña.
+  - `acciones.ts` lleva `"use server"`, así que solo exporta funciones asíncronas y tipos. La acción `registrar` devuelve siempre un `EstadoRegistro` completo (errores por campo, error general y valores escritos, nunca la contraseña) y llama a `auth.api.signUpEmail`. El `redirect` va fuera del `try`, porque funciona lanzando una excepción.
+  - El registro revela si un email ya existe (lo pide el criterio de US-01 y Better Auth devuelve `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL`). En el inicio de sesión (A-03) el mensaje de error sí es genérico.
+  - `formulario-registro.tsx` usa `useActionState` y el `Form` de HeroUI con `validationBehavior="aria"` (sin el mensaje nativo del navegador). Los errores llegan a cada campo con `validationErrors`. El `defaultValue` va en el `TextField`, no en el `Input`. El manejador `onSubmit` se tipa con `React.SyntheticEvent<HTMLFormElement>`, porque el `Form` de HeroUI tipa el suyo con el `FormEvent` obsoleto.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 
-- Zod para validación compartida, React Hook Form con Zod en formularios.
+- Zod para validación compartida: confirmado en A-02. React Hook Form queda sin usar por ahora: los formularios usan `useActionState`, el `Form` de HeroUI y el esquema de Zod en el envío. Se reconsidera si aparece un formulario con validación por campo en vivo.
 - pnpm, Husky con lint-staged, Playwright con axe para accesibilidad.
 - La librería de gráficos (HeroUI no incluye) se decide en su propio ticket (D-03).
 
@@ -85,7 +90,7 @@ Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o 
   - `schemas.ts`: esquemas Zod.
   - `domain/`: lógica de negocio pura, con sus `*.test.ts` al lado.
 - Fuera de las funcionalidades: `src/db/schema/` (esquema central de Drizzle) y `src/db/client.ts`; `src/lib/` (dinero, fechas, textos de interfaz); `src/components/ui/` (componentes compartidos); `src/app/` (rutas finas que solo componen); `e2e/` (tests de extremo a extremo).
-- Las pantallas de la aplicación viven en el grupo de rutas `src/app/(app)/`, cuyo `layout.tsx` monta el esqueleto: enlace «Saltar al contenido», cabecera (solo móvil), barra lateral (desde `md`), `<main id="contenido">` y barra inferior (solo móvil). Las páginas no llevan `<main>` propio. Ese esqueleto y su navegación están en `src/components/layout/`; los destinos de la navegación se declaran una sola vez en `enlaces.ts`. `/design-test` queda fuera del grupo a propósito.
+- Las pantallas de la aplicación viven en el grupo de rutas `src/app/(app)/`, cuyo `layout.tsx` monta el esqueleto: enlace «Saltar al contenido», cabecera (solo móvil), barra lateral (desde `md`), `<main id="contenido">` y barra inferior (solo móvil). Las páginas no llevan `<main>` propio. Ese esqueleto y su navegación están en `src/components/layout/`; los destinos de la navegación se declaran una sola vez en `enlaces.ts`. `/design-test` queda fuera del grupo a propósito. Las pantallas de acceso (`/registro` y, en A-03, `/login`) viven en el grupo `src/app/(auth)/`, con un layout propio sin navegación.
 - Sin archivos `index.ts` que reexporten (barrels). Alias de importación: `@/*` apunta a `src/*`. Los nombres del dominio van en español.
 - Reglas de importación, comprobadas por ESLint (`no-restricted-imports` en `eslint.config.mjs`; si cambias una capa, cambia también la regla):
   - El dominio no importa `next`, `react`, `react-dom`, `@/db`, `drizzle-orm`, `server-only`, ni `queries`, `mutations` o `actions`. Recibe lo que necesita por parámetros.
