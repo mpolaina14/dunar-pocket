@@ -1,5 +1,6 @@
 "use client";
 
+import { BotonCerrarSesion } from "@/features/autenticacion/components/boton-cerrar-sesion";
 import Link from "next/link";
 import { EnlaceNav } from "./enlace-nav";
 import { enlaces } from "./enlaces";
@@ -23,6 +24,9 @@ export function BarraLateral() {
           </li>
         ))}
       </ul>
+      <div className="mt-auto">
+        <BotonCerrarSesion />
+      </div>
     </nav>
   );
 }

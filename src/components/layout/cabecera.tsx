@@ -1,3 +1,4 @@
+import { BotonCerrarSesion } from "@/features/autenticacion/components/boton-cerrar-sesion";
 import Link from "next/link";
 
 export function Cabecera() {
@@ -9,6 +10,7 @@ export function Cabecera() {
       >
         DUNAR Pocket
       </Link>
+      <BotonCerrarSesion />
     </header>
   );
 }
