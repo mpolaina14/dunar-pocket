@@ -39,20 +39,25 @@ export default function FormularioLogin() {
     setErrores({});
 
     setPendiente(true);
-    const { error } = await authClient.signIn.email(resultado.data);
-    setPendiente(false);
+    try {
+      const { error } = await authClient.signIn.email(resultado.data);
 
-    if (error) {
-      setErrorGeneral(
-        error.status === 429
-          ? "Demasiados intentos. Espera un minuto e inténtalo de nuevo."
-          : "Email o contraseña incorrectos",
-      );
-      return;
+      if (error) {
+        setErrorGeneral(
+          error.status === 429
+            ? "Demasiados intentos. Espera un minuto e inténtalo de nuevo."
+            : "Email o contraseña incorrectos",
+        );
+        return;
+      }
+
+      router.push("/");
+      router.refresh();
+    } catch {
+      setErrorGeneral("No se ha podido conectar. Inténtalo de nuevo.");
+    } finally {
+      setPendiente(false);
     }
-
-    router.push("/");
-    router.refresh();
   }
 
   return (

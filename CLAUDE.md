@@ -77,6 +77,8 @@ Decidido en B-08: Better Auth autoalojada en nuestro Postgres, con el adaptador 
   - El límite no está activo en desarrollo: se prueba con `pnpm build && pnpm start`.
   - Ante cualquier fallo, salvo el 429, el mensaje es el mismo («Email o contraseña incorrectos»), para no revelar si el email existe. `esquemaLogin` solo exige contraseña no vacía: la regla de 8 caracteres es del registro.
   - Tras iniciar sesión, `router.push("/")` y `router.refresh()`, para que el servidor repinte con la cookie nueva.
+  - Cerrar sesión (A-05) es `BotonCerrarSesion`, en la cabecera móvil y al final de la barra lateral. Usa `authClient.signOut()`, y solo navega a `/login` si va bien: si falla, muestra un aviso con `role="alert"` y deja reintentar.
+  - Las llamadas de `authClient` **lanzan una excepción** cuando no hay red (`TypeError: Failed to fetch`); `{ error }` solo cubre las respuestas del servidor con fallo. Toda llamada a `authClient` va en `try/catch`, con `setPendiente(false)` en `finally` o en ambos caminos, para no dejar el botón bloqueado. Para el fallo de red, mensaje propio, distinto del de credenciales.
 
 Propuestas de la guía técnica, pendientes de confirmar salvo que el tablero o el backlog digan lo contrario:
 
