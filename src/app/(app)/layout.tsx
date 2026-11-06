@@ -1,6 +1,8 @@
 import { BarraInferior } from "@/components/layout/barra-inferior";
 import { BarraLateral } from "@/components/layout/barra-lateral";
 import { Cabecera } from "@/components/layout/cabecera";
+import { ProtegerSesion } from "@/features/autenticacion/components/proteger-sesion";
+import { Suspense } from "react";
 
 export default function AppLayout({ children }: LayoutProps<"/">) {
   return (
@@ -19,7 +21,9 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
           tabIndex={-1}
           className="mx-auto w-full max-w-5xl flex-1 p-4 pb-[calc(5rem+env(safe-area-inset-bottom))] focus:outline-none md:p-8"
         >
-          {children}
+          <Suspense fallback={null}>
+            <ProtegerSesion>{children}</ProtegerSesion>
+          </Suspense>
         </main>
         <BarraInferior />
       </div>
