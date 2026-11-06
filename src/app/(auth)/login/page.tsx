@@ -1,4 +1,4 @@
-import FormularioLogin from "@/features/autenticacion/formulario-login";
+import FormularioLogin from "@/features/autenticacion/components/formulario-login";
 import type { Metadata } from "next";
 import Link from "next/link";
 

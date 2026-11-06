@@ -51,7 +51,12 @@ const eslintConfig = defineConfig([
                 "El dominio no accede a datos: recibe lo que necesita por parámetros.",
             },
             {
-              group: ["**/queries", "**/mutations", "**/actions"],
+              group: [
+                "**/queries",
+                "**/mutations",
+                "**/actions",
+                "**/acciones",
+              ],
               message: "El dominio no depende de las capas que lo usan.",
             },
           ],
@@ -99,7 +104,7 @@ const eslintConfig = defineConfig([
         {
           patterns: [
             {
-              group: ["**/components/**", "**/actions"],
+              group: ["**/components/**", "**/actions", "**/acciones"],
               message:
                 "El acceso a datos no depende de la interfaz ni de las acciones.",
             },

@@ -11,8 +11,8 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { z } from "zod";
-import { authClient } from "./cliente";
-import { esquemaLogin } from "./esquemas";
+import { authClient } from "../cliente";
+import { esquemaLogin } from "../esquemas";
 
 type ErroresLogin = {
   email?: string[];

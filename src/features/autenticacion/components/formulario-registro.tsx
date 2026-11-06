@@ -11,8 +11,8 @@ import {
 } from "@heroui/react";
 import React, { useActionState, useState } from "react";
 import { z } from "zod";
-import { type EstadoRegistro, registrar } from "./acciones";
-import { esquemaRegistro } from "./esquemas";
+import { type EstadoRegistro, registrar } from "../acciones";
+import { esquemaRegistro } from "../esquemas";
 
 const estadoInicial: EstadoRegistro = {
   errores: {},
